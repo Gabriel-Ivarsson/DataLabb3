@@ -1,5 +1,5 @@
 .data
-message:    .asciz "98"
+message:    .asciz ""
 isEqual:    .asciz "is Equal\n"
 isnotEqual: .asciz "Is not equal\n"
 
@@ -7,12 +7,11 @@ isnotEqual: .asciz "Is not equal\n"
 .global main
 
 main:
-    call getInt
-    movq $40, %rsi
-    addq %rsi, %rax
-    movq %rax, %rdi
-
-    call puts
+    movq $message, %rdi
+    movq $message, %rsi
+    cmpb $0, (%rdi)
+    je print1
+    jne print2
     ret
 
 print1:
