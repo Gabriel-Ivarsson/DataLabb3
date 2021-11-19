@@ -1,14 +1,17 @@
 .data
-message:    .asciz "xxxxxxx"
+message:    .asciz "9"
+isEqual:    .asciz "is Equal\n"
 
 .text
 .global main
 
 main:
-    movq $message, %rdi
-    movq $6, %rsi
-    movq stdin, %rdx
-    call fgets
-    movq $message, %rdi
+    movq $message, %rsi
+    cmpb $'9', (%rsi)
+    je print
+    ret
+
+print:
+    movq $isEqual, %rdi
     call puts
     ret
