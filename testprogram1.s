@@ -1,5 +1,5 @@
 .data
-message:    .asciz "xxxxxxx"
+message:    .asciz ""
 
 .text
 .global main
