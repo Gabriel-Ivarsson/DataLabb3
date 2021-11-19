@@ -2,10 +2,9 @@
     buffert:    .asciz ""
 
 .text
-.global inImage
 .global getInt
 
-inImage:
+inImage: 
     movq stdin, %rdx
     call fgets
     ret
@@ -13,12 +12,14 @@ inImage:
 getInt:
     movq $buffert, %rdi
     movq $10, %rsi
-
-    cmpb $'0', (%rdi)
-    jl inImage
-    cmpb $'9', (%rdi)
-    jg inImage
-
+    cmpq $0, (%rdi)
+    je callInImage
+    cmpb $'\0', (%rdi)
+    je callInImage
+    jmp startBlank
+callInImage:
+    call inImage
+    movq $buffert, %rdi
     movq $0, %rax
     movq $0, %r11 # Teckenvisare
 startBlank:
@@ -54,7 +55,5 @@ NAN:
     negq %rax
     jmp end
 end:
-    movq %rax, %rdi
-    call atoi
     ret
     
