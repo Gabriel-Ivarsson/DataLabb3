@@ -1,13 +1,14 @@
 .data
-message:    .asciz "9"
+message:    .asciz ""
 isEqual:    .asciz "is Equal\n"
 
 .text
 .global main
 
 main:
+    movq $message, %rdi
     movq $message, %rsi
-    cmpb $'9', (%rsi)
+    cmpb $0, (%rdi)
     je print
     ret
 
