@@ -2,8 +2,7 @@
 
 int main()
 {
-    char message[7];
-    inImage(message, 6);
-    printf("Message is %s\n", message);
+    int pleaseWork = getInt();
+    printf("Message is %d\n", pleaseWork);
     return 0;
 }
