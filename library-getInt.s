@@ -60,18 +60,3 @@ NAN:
 end:
     ret
 
-getText:
-    movq %rsi, temp
-    movq inBuffer, %rdx
-start:
-    cmpq $0, %rsi
-    je getTextEnd
-    jl getTextEnd
-    subq $1, %rsi
-    movb (%rdi), (%rdx)
-    incq (%rdi)
-    incq (%rdx)
-getTextEnd:
-    subq %rsi, temp
-    movq temp, %rax
-    ret
