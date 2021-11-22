@@ -1,5 +1,5 @@
 .data
-message:    .asciz ""
+message:    .asciz "a"
 isEqual:    .asciz "is Equal\n"
 isnotEqual: .asciz "Is not equal\n"
 
@@ -9,6 +9,9 @@ isnotEqual: .asciz "Is not equal\n"
 main:
     movq $message, %rdi
     movq $message, %rsi
+    incq %rdi
+    incq %rdi
+    decq %rdi
     cmpb $0, (%rdi)
     je print1
     jne print2

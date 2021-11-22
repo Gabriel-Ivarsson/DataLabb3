@@ -17,7 +17,7 @@ getInt:
     movq $10, %rsi
     testq %rdi, %rdi
     jne callInImage
-    testq %rdi, %rdi
+    cmpb $0, (%rdi)
     je callInImage
     jmp startBlank
 callInImage:
