@@ -2,11 +2,10 @@
 
 int main()
 {
-    int pleaseWork = getInt();
-    printf("Message 1 is %d\n", pleaseWork);
-
-    pleaseWork = getInt();
-    printf("Message 2 is %d\n", pleaseWork);
-
+    char *word = "";
+    int number = getText(word, 5);
+    printf("Compared number was: %d\n", number);
+    printf("Word: %s", word);
+    
     return 0;
 }

@@ -1,29 +1,32 @@
 .data
     inBuffer:    .asciz ""
     temp:	.quad	0
+    bufferPointer:  .quad   0
 
 .text
 .global getInt
-resetImage:
-    movq $' ', inBuffer
-    ret
+.global getText
+.global printBuffer
+
 inImage:
+    movq $inBuffer, %rdi
     movq stdin, %rdx
     call fgets
     ret
 
 getInt:
-    movq $inBuffer, %rdi
+    movq bufferPointer, %rdi
     movq $10, %rsi
-    movq $10, %rsi
-    testq %rdi, %rdi
-    je startBlank
+    cmpq $0, %rdi
+    je callInImage
     cmpb $0, (%rdi)
-    jne startBlank
+    je callInImage
+    jmp startBlank
+callInImage:
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
-    jmp startBlank
+    movq $0, %r11 # Teckenvisare
 startBlank:
     cmpb $' ', (%rdi)
     jne startPositive
@@ -57,48 +60,49 @@ NAN:
     negq %rax
     jmp end
 end:
+    movq %rdi, bufferPointer
     ret
 
 getText:
-    movq %rsi, temp
-    movq inBuffer, %rdx
-callImageText:
-
+    movq bufferPointer, %rdx
+    push %rdi
+    movq $0, %rax
+    cmpq $0, %rdx
+    je gtCallImage
+    cmpb $0, (%rdx)
+gtCallImage:
+    call inImage
+    movq $inBuffer, %rdx
+    pop %rdi
 start:
     cmpq $0, %rsi
     je getTextEnd
-    jl getTextEnd
+    cmpb $0, (%rdi)
+    je getTextEnd
+    cmpb $0, (%rdx)
+    je getTextEnd
+
+    mov (%rdx), %ebx
+    mov %ebx, (%rdi)  
+
+    addq $1, %rax
     subq $1, %rsi
-    movb (%rdi), (%rdx)
-    incq (%rdi)
-    incq (%rdx)
+    incq %rdi
+    incq %rdx
+
+    jmp start
 getTextEnd:
-    subq %rsi, temp
-    movq temp, %rax
+    movq %rax, %rdi
+    call puts
+    movq %rdx, bufferPointer
     ret
 
-getText:
-    movq %rdi, %rdx
-    movq %rsi, temp
+printBuffer:
     movq $inBuffer, %rdi
-    movq $10, %rsi
-    movq $0, %rax # counter
-    testq %rdi, %rdi
-    je getTextloop
-    cmpb $0, (%rdi)
-    jg getTextloop
-    call inImage
-    movq $inBuffer, %rdi
-    movq $0, %rax # counter
-getTextloop:
-    incq %rax
-    movq %rdi, %rdx
-    cmpq temp, %rax
-    je textEnd
-    cmpq $'\0', %rdi
-    je textEnd
-    incq %rdx
-    incq %rdi
-    jmp getTextloop
-textEnd:
+    call puts
+    ret
+
+printBufferPosition:
+    movq $bufferPointer, %rdi
+    call puts
     ret

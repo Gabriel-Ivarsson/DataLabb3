@@ -2,9 +2,11 @@
 	.text
 	.section	.rodata
 .LC0:
-	.string	"Message 1 is %d\n"
+	.string	""
 .LC1:
-	.string	"Message 2 is %d\n"
+	.string	"Compared number was: %d\n"
+.LC2:
+	.string	"Word: %s"
 	.text
 	.globl	main
 	.type	main, @function
@@ -18,20 +20,22 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
+	leaq	.LC0(%rip), %rax
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rax
+	movl	$5, %esi
+	movq	%rax, %rdi
 	movl	$0, %eax
-	call	getInt@PLT
-	movl	%eax, -4(%rbp)
-	movl	-4(%rbp), %eax
-	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movl	$0, %eax
-	call	getInt@PLT
-	movl	%eax, -4(%rbp)
-	movl	-4(%rbp), %eax
+	call	getText@PLT
+	movl	%eax, -12(%rbp)
+	movl	-12(%rbp), %eax
 	movl	%eax, %esi
 	leaq	.LC1(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	movq	-8(%rbp), %rax
+	movq	%rax, %rsi
+	leaq	.LC2(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$0, %eax
