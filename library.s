@@ -15,16 +15,15 @@ inImage:
 getInt:
     movq $inBuffer, %rdi
     movq $10, %rsi
+    movq $10, %rsi
     testq %rdi, %rdi
-    jne callInImage
+    je startBlank
     cmpb $0, (%rdi)
-    je callInImage
-    jmp startBlank
-callInImage:
+    jne startBlank
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
-    movq $0, %r11 # Teckenvisare
+    jmp startBlank
 startBlank:
     cmpb $' ', (%rdi)
     jne startPositive
@@ -74,4 +73,30 @@ start:
 getTextEnd:
     subq %rsi, temp
     movq temp, %rax
+    ret
+
+getText:
+    movq %rdi, %rdx
+    movq %rsi, temp
+    movq $inBuffer, %rdi
+    movq $10, %rsi
+    movq $0, %rax # counter
+    testq %rdi, %rdi
+    je getTextloop
+    cmpb $0, (%rdi)
+    jg getTextloop
+    call inImage
+    movq $inBuffer, %rdi
+    movq $0, %rax # counter
+getTextloop:
+    incq %rax
+    movq %rdi, %rdx
+    cmpq temp, %rax
+    je textEnd
+    cmpq $'\0', %rdi
+    je textEnd
+    incq %rdx
+    incq %rdi
+    jmp getTextloop
+textEnd:
     ret
