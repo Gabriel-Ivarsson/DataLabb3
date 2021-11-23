@@ -1,29 +1,28 @@
 .data
     inBuffer:    .asciz ""
-    temp:	.quad	0
+    bufPointer:   .quad   0
 
 .text
 .global getInt
-resetImage:
-    movq $' ', inBuffer
-    ret
 inImage:
     movq stdin, %rdx
     call fgets
     ret
-
 getInt:
     movq $inBuffer, %rdi
-    movq $10, %rsi
-    movq $10, %rsi
-    testq %rdi, %rdi
-    je startBlank
     cmpb $0, (%rdi)
-    jne startBlank
+    je callInImage
+    movq bufPointer, %rdi
+    cmpb $0, (%rdi)
+    je callInImage
+    jmp startBlank
+callInImage:
+    movq $12, %rsi
+    movq $inBuffer, %rdi
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
-    jmp startBlank
+    movq $0, %r11 # Teckenvisare
 startBlank:
     cmpb $' ', (%rdi)
     jne startPositive
@@ -57,6 +56,8 @@ NAN:
     negq %rax
     jmp end
 end:
+    incq %rdi
+    movq %rdi, bufPointer
     ret
 
 getText:
