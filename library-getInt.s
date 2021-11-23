@@ -8,6 +8,7 @@ inImage:
     movq stdin, %rdx
     call fgets
     ret
+
 getInt:
     movq $inBuffer, %rdi
     movq $10, %rsi

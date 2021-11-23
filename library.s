@@ -63,6 +63,8 @@ end:
 getText:
     movq %rsi, temp
     movq inBuffer, %rdx
+callImageText:
+
 start:
     cmpq $0, %rsi
     je getTextEnd
