@@ -2,10 +2,8 @@
 	.text
 	.section	.rodata
 .LC0:
-	.string	""
-.LC1:
 	.string	"Compared number was: %d\n"
-.LC2:
+.LC1:
 	.string	"Word: %s"
 	.text
 	.globl	main
@@ -19,26 +17,32 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	leaq	.LC0(%rip), %rax
+	subq	$32, %rsp
+	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
-	movq	-8(%rbp), %rax
-	movl	$5, %esi
+	xorl	%eax, %eax
+	leaq	-15(%rbp), %rax
+	movl	$6, %esi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT
-	movl	%eax, -12(%rbp)
-	movl	-12(%rbp), %eax
+	movl	%eax, -20(%rbp)
+	movl	-20(%rbp), %eax
 	movl	%eax, %esi
+	leaq	.LC0(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	leaq	-15(%rbp), %rax
+	movq	%rax, %rsi
 	leaq	.LC1(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	movq	-8(%rbp), %rax
-	movq	%rax, %rsi
-	leaq	.LC2(%rip), %rdi
 	movl	$0, %eax
-	call	printf@PLT
-	movl	$0, %eax
+	movq	-8(%rbp), %rdx
+	subq	%fs:40, %rdx
+	je	.L3
+	call	__stack_chk_fail@PLT
+.L3:
 	leave
 	.cfi_def_cfa 7, 8
 	ret

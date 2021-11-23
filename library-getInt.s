@@ -1,6 +1,6 @@
 .data
     inBuffer:    .asciz ""
-    temp:	.quad	0
+    bufPointer:   .quad   0
 
 .text
 .global getInt
@@ -11,13 +11,15 @@ inImage:
 
 getInt:
     movq $inBuffer, %rdi
-    movq $10, %rsi
-    testq %rdi, %rdi
-    jne callInImage
+    cmpb $0, (%rdi)
+    je callInImage
+    movq bufPointer, %rdi
     cmpb $0, (%rdi)
     je callInImage
     jmp startBlank
 callInImage:
+    movq $12, %rsi
+    movq $inBuffer, %rdi
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
@@ -55,5 +57,7 @@ NAN:
     negq %rax
     jmp end
 end:
+    incq %rdi
+    movq %rdi, bufPointer
     ret
 

@@ -10,8 +10,6 @@ main:
     movq $message, %rdi
     movq $message, %rsi
     incq %rdi
-    incq %rdi
-    decq %rdi
     cmpb $0, (%rdi)
     je print1
     jne print2
