@@ -22,7 +22,7 @@ main:
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
 	leaq	-15(%rbp), %rax
-	movl	$6, %esi
+	movl	$5, %esi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT
@@ -38,7 +38,7 @@ main:
 	movl	$0, %eax
 	call	printf@PLT
 	leaq	-15(%rbp), %rax
-	movl	$6, %esi
+	movl	$5, %esi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT

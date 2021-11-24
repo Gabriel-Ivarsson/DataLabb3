@@ -3,11 +3,11 @@
 int main()
 {
     char word[7];
-    int number = getText(word, 6);
+    int number = getText(word, 5);
     printf("Compared number was: %d\n", number);
     printf("Word: %s\n", word);
 
-    number = getText(word, 6);
+    number = getText(word, 5);
     printf("Compared number was: %d\n", number);
     printf("Word: %s\n", word);
 

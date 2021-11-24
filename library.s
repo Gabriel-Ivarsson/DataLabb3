@@ -71,6 +71,7 @@ getText:
     je gtCallImage
 gtCallImage:
     push %rdi
+    movq $20, %rsi
     call inImage
     movq $inBuffer, %rdx
     pop %rdi
