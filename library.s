@@ -84,9 +84,6 @@ gtCallImage:
 start:
     movq $0, %rax
 textLoop:
-    cmpq $0, %rsi
-    je getTextEnd
-
     mov (%rdx), %ebx
     mov %ebx, (%rdi)
 
@@ -95,6 +92,8 @@ textLoop:
     incq %rdi
     incq %rdx
 
+    cmpq $0, %rsi
+    je getTextEnd
     cmpb $0, (%rdx)
     je getTextEnd
     cmpb $0, (%rdi)
