@@ -4,7 +4,7 @@
 .LC0:
 	.string	"Compared number was: %d\n"
 .LC1:
-	.string	"Word: %s"
+	.string	"Word: %s\n"
 	.text
 	.globl	main
 	.type	main, @function
@@ -21,6 +21,22 @@ main:
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
+	leaq	-15(%rbp), %rax
+	movl	$6, %esi
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	getText@PLT
+	movl	%eax, -20(%rbp)
+	movl	-20(%rbp), %eax
+	movl	%eax, %esi
+	leaq	.LC0(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	leaq	-15(%rbp), %rax
+	movq	%rax, %rsi
+	leaq	.LC1(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
 	leaq	-15(%rbp), %rax
 	movl	$6, %esi
 	movq	%rax, %rdi

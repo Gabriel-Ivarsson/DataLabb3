@@ -63,13 +63,15 @@ end:
     ret
 
 getText:
-    movq bufPointer, %rdx
-    push %rdi
     movq $0, %rax
-    cmpq $0, %rdx
-    je gtCallImage
+    movq $inBuffer, %rdx
     cmpb $0, (%rdx)
+    je gtCallImage
+    movq bufPointer, %rdx
+    cmpb $0, (%rdx)
+    je gtCallImage
 gtCallImage:
+    push %rdi
     call inImage
     movq $inBuffer, %rdx
     pop %rdi
@@ -82,7 +84,7 @@ start:
     je getTextEnd
 
     mov (%rdx), %ebx
-    mov %ebx, (%rdi)  
+    mov %ebx, (%rdi)
 
     addq $1, %rax
     subq $1, %rsi
