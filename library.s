@@ -63,7 +63,6 @@ end:
     ret
 
 getText:
-    movq $0, %rax
     movq $inBuffer, %rdx
     cmpb $0, (%rdx)
     je gtCallImage
@@ -76,6 +75,8 @@ gtCallImage:
     movq $inBuffer, %rdx
     pop %rdi
 start:
+    movq $0, %rax
+textLoop:
     cmpq $0, %rsi
     je getTextEnd
     cmpb $0, (%rdi)
@@ -91,8 +92,10 @@ start:
     incq %rdi
     incq %rdx
 
-    jmp start
+    jmp textLoop
 getTextEnd:
+    movb $0, (%rdi)
+    movb $0, (%rdx)
     movq %rdx, bufPointer
     ret
 
