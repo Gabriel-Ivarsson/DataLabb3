@@ -2,14 +2,27 @@
 
 int main()
 {
-    char word[7];
-    int number = getText(word, 6);
-    printf("Compared number was: %d\n", number);
-    printf("Word: %s\n", word);
+    // getInt
+/*
+ *    int pleaseWork = getInt();
+ *    printf("Message 1 is %d\n", pleaseWork);
+ *
+ *    pleaseWork = getInt();
+ *    printf("Message 2 is %d\n", pleaseWork);
+ */
 
-    number = getText(word, 6);
-    printf("Compared number was: %d\n", number);
-    printf("Word: %s\n", word);
+    // getText
+    char word1[7];
+    int number1 = getText(&word1, 5);
+
+    printf("Compared number1 was: %d\n", number1);
+    printf("Word: %s\n", word1);
+
+    char word2[7];
+    int number2 = getText(&word2, 5);
+
+    printf("Compared number2 was: %d\n", number2);
+    printf("Word: %s\n", word2);
 
     return 0;
 }

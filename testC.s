@@ -2,9 +2,11 @@
 	.text
 	.section	.rodata
 .LC0:
-	.string	"Compared number was: %d\n"
+	.string	"Compared number1 was: %d\n"
 .LC1:
 	.string	"Word: %s\n"
+.LC2:
+	.string	"Compared number2 was: %d\n"
 	.text
 	.globl	main
 	.type	main, @function
@@ -21,31 +23,31 @@ main:
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
-	leaq	-15(%rbp), %rax
-	movl	$6, %esi
+	leaq	-22(%rbp), %rax
+	movl	$5, %esi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT
-	movl	%eax, -20(%rbp)
-	movl	-20(%rbp), %eax
+	movl	%eax, -32(%rbp)
+	movl	-32(%rbp), %eax
 	movl	%eax, %esi
 	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	leaq	-15(%rbp), %rax
+	leaq	-22(%rbp), %rax
 	movq	%rax, %rsi
 	leaq	.LC1(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	leaq	-15(%rbp), %rax
-	movl	$6, %esi
+	movl	$5, %esi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT
-	movl	%eax, -20(%rbp)
-	movl	-20(%rbp), %eax
+	movl	%eax, -28(%rbp)
+	movl	-28(%rbp), %eax
 	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
+	leaq	.LC2(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	leaq	-15(%rbp), %rax
