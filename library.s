@@ -7,6 +7,7 @@
 .text
 .global getInt
 .global getText
+.global getChar
 inImage:
     movq $inBuffer, %rdi
     movq stdin, %rdx
@@ -71,7 +72,7 @@ getText:
     movq bufPointer, %rdx
     cmpb $0, (%rdx)
     je gtCallImage
-    jmp start
+    jmp gtStart
 gtCallImage:
     movq %rdi, temp2
     addq $1, %rsi
@@ -81,7 +82,7 @@ gtCallImage:
     movq $inBuffer, %rdx
     movq temp2, %rdi
     movq temp, %rsi
-start:
+gtStart:
     movq $0, %rax
 textLoop:
     mov (%rdx), %ebx
@@ -102,6 +103,24 @@ textLoop:
     jmp textLoop
 getTextEnd:
     movq %rdx, bufPointer
+    ret
+
+getChar:
+    movq bufPointer, %rdi
+    cmpq $0, %rdi
+    je gcCallImage
+    cmpb $0, (%rdi)
+    je callInImage
+    jmp getCharEnd
+gcCallImage:
+    movq $12, %rsi
+    movq $inBuffer, %rdi
+    call inImage
+    movq $inBuffer, %rdi
+getCharEnd:
+    movq (%rdi), %rax
+    incq %rdi
+    movq %rdi, bufPointer
     ret
 
 printBuffer:
