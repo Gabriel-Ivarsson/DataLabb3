@@ -8,6 +8,7 @@
 .global getInt
 .global getText
 .global getChar
+.global getInPos
 inImage:
     movq $inBuffer, %rdi
     movq stdin, %rdx
@@ -118,7 +119,7 @@ gcCallImage:
     call inImage
     movq $inBuffer, %rdi
 getCharEnd:
-    movq (%rdi), %rax
+    mov (%rdi), %eax
     incq %rdi
     movq %rdi, bufPointer
     ret
@@ -126,6 +127,10 @@ getCharEnd:
 printBuffer:
     movq $inBuffer, %rdi
     call puts
+    ret
+
+getInPos:
+    movq bufPointer, %rax
     ret
 
 printBufferPosition:

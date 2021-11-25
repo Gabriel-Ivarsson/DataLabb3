@@ -6,10 +6,8 @@ buf:	.space 64
 main:
 	pushq $0
 
-    call getChar
-    movq buf, %rdi
-    mov %rax, (%rdi)
+    call getInPos
+    movq %rax, %rdi
 
-    call puts
     popq %rax
 	ret
