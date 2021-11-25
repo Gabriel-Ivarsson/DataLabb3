@@ -5,10 +5,15 @@ buf:	.space	64
 .global	main
 main:
 	pushq $0
-	movq $12,%rsi
+	movq $15,%rsi
 	movq $buf,%rdi
     call getText
-    movq %rax,%rdi
+    movq $buf, %rdi
+    call puts
+    movq $15,%rsi
+	movq $buf,%rdi
+    call getText
+    movq $buf, %rdi
     call puts
     popq %rax
 	ret

@@ -1,6 +1,8 @@
 .data
     inBuffer:    .asciz ""
     bufPointer:   .quad   0
+    temp:   .quad   0
+    temp2:   .quad   0
 
 .text
 .global getInt
@@ -69,22 +71,19 @@ getText:
     movq bufPointer, %rdx
     cmpb $0, (%rdx)
     je gtCallImage
+    jmp start
 gtCallImage:
-    push %rdi
-    movq $20, %rsi
+    movq %rdi, temp2
+    addq $1, %rsi
+    movq %rsi, temp
+    movq $inBuffer, %rdi
     call inImage
     movq $inBuffer, %rdx
-    pop %rdi
+    movq temp2, %rdi
+    movq temp, %rsi
 start:
     movq $0, %rax
 textLoop:
-    cmpq $0, %rsi
-    je getTextEnd
-    cmpb $0, (%rdi)
-    je getTextEnd
-    cmpb $0, (%rdx)
-    je getTextEnd
-
     mov (%rdx), %ebx
     mov %ebx, (%rdi)
 
@@ -93,10 +92,15 @@ textLoop:
     incq %rdi
     incq %rdx
 
+    cmpq $0, %rsi
+    je getTextEnd
+    cmpb $0, (%rdx)
+    je getTextEnd
+    cmpb $0, (%rdi)
+    je getTextEnd
+
     jmp textLoop
 getTextEnd:
-    movb $0, (%rdi)
-    movb $0, (%rdx)
     movq %rdx, bufPointer
     ret
 

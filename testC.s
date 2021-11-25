@@ -1,10 +1,20 @@
 	.file	"testC.c"
 	.text
 	.section	.rodata
+	.align 8
 .LC0:
-	.string	"Compared number was: %d\n"
+	.string	"Enter first word(max %d long):\n"
 .LC1:
-	.string	"Word: %s\n"
+	.string	"Compared number1 was: %d\n"
+.LC2:
+	.string	"Word1: %s\n"
+	.align 8
+.LC3:
+	.string	"Enter second word(max %d long):\n"
+.LC4:
+	.string	"Compared number2 was: %d\n"
+.LC5:
+	.string	"Word2: %s\n"
 	.text
 	.globl	main
 	.type	main, @function
@@ -17,40 +27,58 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$32, %rsp
+	subq	$48, %rsp
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
-	leaq	-15(%rbp), %rax
-	movl	$5, %esi
-	movq	%rax, %rdi
-	movl	$0, %eax
-	call	getText@PLT
-	movl	%eax, -20(%rbp)
-	movl	-20(%rbp), %eax
-	movl	%eax, %esi
+	movq	$0, -22(%rbp)
+	movl	$0, -14(%rbp)
+	movw	$0, -10(%rbp)
+	movl	$12, %esi
 	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	leaq	-15(%rbp), %rax
-	movq	%rax, %rsi
-	leaq	.LC1(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	leaq	-15(%rbp), %rax
-	movl	$5, %esi
+	leaq	-22(%rbp), %rax
+	movl	$12, %esi
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT
-	movl	%eax, -20(%rbp)
-	movl	-20(%rbp), %eax
+	movl	%eax, -44(%rbp)
+	movl	-44(%rbp), %eax
 	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
+	leaq	.LC1(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
-	leaq	-15(%rbp), %rax
+	leaq	-22(%rbp), %rax
 	movq	%rax, %rsi
-	leaq	.LC1(%rip), %rdi
+	leaq	.LC2(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	movl	$10, %esi
+	leaq	.LC3(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+<<<<<<< HEAD
+	leaq	-15(%rbp), %rax
+	movl	$5, %esi
+=======
+	movq	$0, -34(%rbp)
+	movl	$0, -26(%rbp)
+	leaq	-34(%rbp), %rax
+	movl	$10, %esi
+>>>>>>> 94c1567b9fff7066c1dfe887e9ba25a265dde114
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	getText@PLT
+	movl	%eax, -40(%rbp)
+	movl	-40(%rbp), %eax
+	movl	%eax, %esi
+	leaq	.LC4(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	leaq	-34(%rbp), %rax
+	movq	%rax, %rsi
+	leaq	.LC5(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$0, %eax
