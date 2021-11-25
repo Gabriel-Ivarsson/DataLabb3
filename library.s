@@ -3,17 +3,33 @@
     bufPointer:   .quad   0
     temp:   .quad   0
     temp2:   .quad   0
+    maxPOS: .quad 0
 
 .text
 .global getInt
 .global getText
 .global getChar
 .global getInPos
+setMaxPos:
+    movq $0, %rbx
+stpLoop:
+    movq $inBuffer, %rdi
+    incq %rbx
+    incq %rdi
+    cmpb $0, (%rdi)
+    je stpEnd
+    jmp stpLoop
+stpEnd:
+    movq $0, %rdi
+    movq %rbx, maxPOS
+    ret
+
 inImage:
     movq $inBuffer, %rdi
     movq stdin, %rdx
     call fgets
     ret
+
 getInt:
     movq $inBuffer, %rdi
     cmpb $0, (%rdi)
