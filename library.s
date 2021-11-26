@@ -1,5 +1,6 @@
 .data
     inBuffer:    .asciz ""
+    outBuffer:    .asciz ""
     bufPointer:   .quad   0
     bufPosition:   .quad   0
     temp:   .quad   0
@@ -7,13 +8,15 @@
     maxPOS: .quad 0
 
 .text
+.global inImage
+.global outImage
 .global getInt
 .global getText
 .global getChar
 .global setInPos
 .global printBufferPosition
 .global printBuffer
-.global setMaxPos10
+.global outImage
 
 inImage:
     movq $inBuffer, %rdi
@@ -182,4 +185,13 @@ spEnd:
 printBufferPosition:
     movq $bufPointer, %rdi
     call puts
+    ret
+
+
+# out
+outImage:
+    movq $outBuffer, %rdi
+    call puts
+    # cleans buffer
+    movq $0, outBuffer
     ret
