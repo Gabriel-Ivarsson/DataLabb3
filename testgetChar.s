@@ -1,4 +1,4 @@
-.data
+    .data
 buf:	.space 64
 .text
 

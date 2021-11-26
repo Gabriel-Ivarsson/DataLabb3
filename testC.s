@@ -58,15 +58,10 @@ main:
 	leaq	.LC3(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
-<<<<<<< HEAD
-	leaq	-15(%rbp), %rax
-	movl	$5, %esi
-=======
 	movq	$0, -34(%rbp)
 	movl	$0, -26(%rbp)
 	leaq	-34(%rbp), %rax
 	movl	$10, %esi
->>>>>>> 94c1567b9fff7066c1dfe887e9ba25a265dde114
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	getText@PLT
@@ -81,6 +76,8 @@ main:
 	leaq	.LC5(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
+	movl	$0, %eax
+	call	printBuffer@PLT
 	movl	$0, %eax
 	movq	-8(%rbp), %rdx
 	subq	%fs:40, %rdx
