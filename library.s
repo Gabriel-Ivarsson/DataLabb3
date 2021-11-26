@@ -10,19 +10,9 @@
 .global getText
 .global getChar
 .global getInPos
-setMaxPos:
-    movq $0, %rbx
-stpLoop:
-    movq $inBuffer, %rdi
-    incq %rbx
-    incq %rdi
-    cmpb $0, (%rdi)
-    je stpEnd
-    jmp stpLoop
-stpEnd:
-    movq $0, %rdi
-    movq %rbx, maxPOS
-    ret
+.global setInPos
+.global printBufferPosition
+.global setMaxPos10
 
 inImage:
     movq $inBuffer, %rdi
@@ -147,6 +137,49 @@ printBuffer:
 
 getInPos:
     movq bufPointer, %rax
+    ret
+
+setMaxPos:
+    movq $0, %rbx
+stpLoop:
+    cmpb $0, (%rdi)
+    je stpEnd
+    movq $inBuffer, %rdi
+    incq %rbx
+    incq %rdi
+    jmp stpLoop
+stpEnd:
+    movq $0, %rdi
+    movq %rbx, maxPOS
+    ret
+
+setMaxPos10:
+    movq $10, maxPOS
+    ret
+
+setInPos:
+    movq inBuffer, %rdx
+    movq $0, %rbx
+    call setMaxPos
+    cmpq maxPOS, %rsi
+    jge reqMaxPos
+    cmpq $0, %rsi
+    jle reqZero
+    jmp spLoop
+reqMaxPos:
+    movq maxPOS, %rsi
+    jmp spLoop
+reqZero:
+    movq %rdx, bufPointer
+    jmp spEnd
+spLoop:
+    cmpq %rbx, %rsi
+    je spEnd
+    incq %rbx
+    incq %rdx
+    jmp spLoop
+spEnd:
+    movq %rdx, bufPointer
     ret
 
 printBufferPosition:
