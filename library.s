@@ -156,6 +156,7 @@ stpEnd:
     movq %rbx, maxPOS
     ret
 
+
 setInPos:
     movq inBuffer, %rdx
     movq $0, %rbx
@@ -191,4 +192,6 @@ printBufferPosition:
 outImage:
     movq $outBuffer, %rdi
     call puts
+    # cleans buffer
+    movq $0, outBuffer
     ret
