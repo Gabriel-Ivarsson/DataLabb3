@@ -6,26 +6,33 @@ buf:	.space 64
 main:
     pushq $0
     movq $buf,%rdi
-    movq $12,%rsi
+    movq $15,%rsi
     call getText
     movq $buf,%rdi
     call puts
-    call printBuffer
     movq $2, %rdi
     call setInPos
-    call printBuffer
     call printBufferPosition
+    call printBuffer
     movq $3, %rdi
     call setInPos
-    call printBuffer
     call printBufferPosition
-    movq $10, %rdi
+    call printBuffer
+    movq $9, %rdi
     call setInPos
-    call printBuffer
     call printBufferPosition
+    call printBuffer
     movq $4, %rdi
     call setInPos
-    call printBuffer
     call printBufferPosition
+    call printBuffer
+    movq $-4, %rdi
+    call setInPos
+    call printBufferPosition
+    call printBuffer
+    movq $11, %rdi
+    call setInPos
+    call printBufferPosition
+    call printBuffer
     popq %rax
     ret

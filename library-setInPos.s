@@ -1,5 +1,5 @@
 .data
-    inBuffer:    .asciz ""
+    inBuffer:    .space 64
     bufPointer:   .quad   0
     bufPosition:   .quad   0
     temp:   .quad   0
@@ -132,7 +132,7 @@ getCharEnd:
     ret
 
 printBuffer:
-    movq $bufPointer, %rdi
+    movq bufPointer, %rdi
     call puts
     ret
 
@@ -146,7 +146,7 @@ setMaxPos:
 stpLoop:
     cmpb $0, (%r10)
     je stpEnd
-    addq $1, %rcx
+    incq %rcx
     incq %r10
     jmp stpLoop
 stpEnd:
@@ -174,7 +174,7 @@ spLoopStart:
 spLoop:
     cmpq %rcx, %rdi
     je spEnd
-    addq $1, %rcx
+    incq %rcx
     incq %r10
     jmp spLoop
 spEnd:

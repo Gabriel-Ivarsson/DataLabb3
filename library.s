@@ -1,6 +1,6 @@
 .data
-    inBuffer:    .asciz ""
-    outBuffer:    .asciz ""
+    inBuffer:    .space 64
+    outBuffer:    .space 64
     bufPointer:   .quad   0
     bufPosition:   .quad   0
     temp:   .quad   0
@@ -133,59 +133,65 @@ getCharEnd:
     incq %rdi
     movq %rdi, bufPointer
     ret
+
 printBuffer:
-    movq $inBuffer, %rdi
+    movq bufPointer, %rdi
     call puts
     ret
 
 getInPos:
-    movq bufPointer, %rax
+    movq $bufPointer, %rax
     ret
 
 setMaxPos:
-    movq $0, %rbx
+    movq $inBuffer, %r10
+    movq $0, %rcx
 stpLoop:
-    cmpb $0, (%rdi)
+    cmpb $0, (%r10)
     je stpEnd
-    movq $inBuffer, %rdi
-    incq %rbx
-    incq %rdi
+    incq %rcx
+    incq %r10
     jmp stpLoop
 stpEnd:
-    movq $0, %rdi
-    movq %rbx, maxPOS
+    movq %rcx, maxPOS
+    movq $0, %rcx
     ret
 
-
 setInPos:
-    movq inBuffer, %rdx
-    movq $0, %rbx
-    call setMaxPos
-    cmpq maxPOS, %rsi
-    jge reqMaxPos
-    cmpq $0, %rsi
+    movq $inBuffer, %r10
+    cmpq $0, %rdi
     jle reqZero
-    jmp spLoop
+    call setMaxPos
+    cmpq maxPOS, %rdi
+    jge reqMaxPos
+    jmp spLoopStart
 reqMaxPos:
-    movq maxPOS, %rsi
-    jmp spLoop
+    movq maxPOS, %rdi
+    jmp spLoopStart
 reqZero:
-    movq %rdx, bufPointer
+    movq $0, %rcx
     jmp spEnd
+spLoopStart:
+    movq $inBuffer, %r10
+    movq $0, %rcx
 spLoop:
-    cmpq %rbx, %rsi
+    cmpq %rcx, %rdi
     je spEnd
-    incq %rbx
-    incq %rdx
+    incq %rcx
+    incq %r10
     jmp spLoop
 spEnd:
-    movq %rdx, bufPointer
+    addq $'0', %rcx
+    movq %rcx, bufPosition
+    movq %r10, bufPointer
     ret
 
 printBufferPosition:
-    movq $bufPointer, %rdi
+    movq $bufPosition, %rdi
     call puts
     ret
+
+
 
 
 # out
