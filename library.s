@@ -2,6 +2,7 @@
     inBuffer:    .space 64
     outBuffer:    .space 64
     bufPointer:   .quad   0
+    outBufPointer: .quad   0
     bufPosition:   .quad   0
     temp:   .quad   0
     temp2:   .quad   0
@@ -17,6 +18,7 @@
 .global printBufferPosition
 .global printBuffer
 .global outImage
+.global putInt
 
 inImage:
     movq $inBuffer, %rdi
@@ -200,4 +202,31 @@ outImage:
     call puts
     # cleans buffer
     movq $0, outBuffer
+    ret
+
+# Denna funkar just nu bara med en siffra behöver mer arbete
+putInt:
+    movq %rdi, %rax
+    jmp string
+string:
+    movq $0, %rdx
+    movq $10, %rbx
+    idivq %rbx
+    # rdx har remainder från divisionen
+    addq $'0', %rdx
+    pushq %rdx
+
+    cmpq $0, %rax
+    jl string
+    # %r10 är bara ett test
+    movq $0, %r10
+    jmp callOutimage
+callOutimage:
+    incq %r10
+    popq %rdi
+    movq %rdi, outBuffer
+    call outImage
+    # test compare ta bort eller ändra om denna sen
+    cmpq $2, %r10
+    jl callOutimage
     ret
