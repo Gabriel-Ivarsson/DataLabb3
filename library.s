@@ -252,7 +252,7 @@ transfer2Buf2:
     jmp ptEnd
 ptEnd:
     decq %r13
-    movq $0, (%r13)
+    movb $0, (%r13)
     ret
 
 printOutBuffer:
