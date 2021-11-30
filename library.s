@@ -8,7 +8,6 @@
     temp:   .quad   0
     temp2:   .quad   0
     maxPOS: .quad 0
-    numOfDigits:    .quad 0
 
 .text
 .global inImage
@@ -21,6 +20,7 @@
 .global printBuffer
 .global outImage
 .global putInt
+.global putText
 .global printOutBuffer
 
 inImage:
@@ -209,7 +209,6 @@ outImage:
 
 putInt:
     movq %rdi, %r12
-    movq $numOfDigits, %rsi
     leaq outBufPointer, %r13
     leaq tempBuf, %r15
     movb $'\0', (%r15)
@@ -233,8 +232,6 @@ to_string:
     movq %rdx, (%r15)
     incq %r13
     incq %r15
-    addq $1, %rsi
-    movq %rsi, numOfDigits
     cmpq $0, %rax
     je transfer2Buf1
     jmp to_string
@@ -258,4 +255,21 @@ ptEnd:
 printOutBuffer:
     movq $outBuffer, %rdi
     call puts
+    ret
+
+# Denna borde vara ganska klar men jag tror kanske det behövs ändra var outbuffpointern pekar också
+putText:
+    leaq outBuffer, %rsi
+    jmp putTextLoop
+putTextLoop:
+    mov (%rdi), %edx
+    mov %edx, (%rsi)
+    incq %rsi
+    incq %rdi
+    cmpb $0, (%rdi)
+    jne putTextLoop
+    jmp putTextEnd
+putTextEnd:
+    incq %rdi
+    movb $0, (%rdi)
     ret
