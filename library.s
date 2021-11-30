@@ -1,12 +1,14 @@
 .data
     inBuffer:    .space 64
     outBuffer:    .space 64
+    tempBuf:    .space 64
     bufPointer:   .quad   0
     outBufPointer: .quad   0
     bufPosition:   .quad   0
     temp:   .quad   0
     temp2:   .quad   0
     maxPOS: .quad 0
+    numOfDigits:    .quad 0
 
 .text
 .global inImage
@@ -205,65 +207,55 @@ outImage:
     movq $0, outBuffer
     ret
 
-# Denna funkar just nu bara med en siffra behöver mer arbete
-p1utInt:
-    movq %rdi, %rax
-s1tring:
-    movq $0, %rdx
-    movq $10, %rbx
-    idivq %rbx
-    # rdx har remainder från divisionen
-    addq $'0', %rdx
-    pushq %rdx
-
-    cmpq $0, %rax
-    jl s1tring
-    # %r10 är bara ett test
-    movq $0, %r10
-    jmp callOutimage
-c1allOutimage:
-    incq %r10
-    popq %rdi
-    movq %rdi, outBuffer
-    call outImage
-    # test compare ta bort eller ändra om denna sen
-    cmpq $2, %r10
-    jl callOutimage
-    ret
-
 putInt:
-    movq outBufPointer, %r12
-    movq %rdi, %r13
-    push %rdi
-    cmpq $0, %r12
-    je callOutimage
-    cmpb $0, (%r12)
-    je callOutimage
-    incq %r12
-    jne toString
-callOutimage:
+    movq %rdi, %r12
+    movq $numOfDigits, %rsi
+    leaq outBufPointer, %r13
+    leaq tempBuf, %r15
+    cmpq $0, %r13
+    je ptCallImage
+    cmpb $'\0', (%r13)
+    je ptCallImage
+    jmp to_string
+ptCallImage:
     call outImage
-    movq outBuffer, %r12
-toString:
+    leaq outBuffer, %r13
+    jmp to_string
+to_string:
     movq $0, %rdx
-    movq %r13, %rax
-    movq $10, %rbx
-    divq %rbx
-    movq %rax, %r13
+    movq %r12, %rax 
+    movq $10, %r14
+    divq %r14
+    movq %rax, %r12 
     addq $'0', %rdx
-    mov %rdx, %ebp
-    mov %ebp, (%r12)
-    incq %r12
-    cmpq $0, %rax
-    jne toString
-    jle piEnd
-piEnd:
-    incq %r12
-    movb $'\0', (%r12)
-    movq %r12, outBufPointer
+    movq %rdx, (%r15)
+    incq %r13
+    incq %r15
+    addq $1, %rsi
+    movq %rsi, numOfDigits
+    cmpq $0, %rax 
+    je transfer2Buf1
+    jmp to_string
+transfer2Buf1:
+    movq $'\0', (%r13)
+    movq $'\0', (%r15)
+    leaq outBuffer, %r13
+    movq $20, %rsi
+    decq %r15
+    jmp transfer2Buf2
+transfer2Buf2:
+    mov (%r15), %edx
+    mov %edx, (%r13)
+    incq %r13
+    decq %r15
+    subq $1, %rsi
+    cmpq $0, %rsi
+    jg transfer2Buf2
+    jmp ptEnd
+ptEnd:
     ret
 
 printOutBuffer:
-    movq outBuffer, %rdi
+    movq $outBuffer, %rdi
     call puts
     ret

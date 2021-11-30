@@ -9,11 +9,11 @@
 main:
     leaq buf, %r13
     leaq temp, %r15
-    movq $10112, %rdi
+    movq $1011, %rdi
     movq %rdi, num
     movq num, %r12
-    call printEachDigit
     movq $numOfDigits, %rsi
+    call printEachDigit
 
 printEachDigit:
     movq $0, %rdx
@@ -22,7 +22,6 @@ printEachDigit:
     divq %r14
     movq %rax, %r12 
     addq $'0', %rdx
-    movq %rdx, (%r13)
     movq %rdx, (%r15)
     incq %r13
     incq %r15
