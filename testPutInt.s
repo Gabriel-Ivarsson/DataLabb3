@@ -3,11 +3,11 @@
 .global	main
 main:
 	pushq $0
-    movq $10001, %rdi
+    movq $1234567890, %rdi
     call putInt
     movq $10201, %rdi
     call putInt
-    call printOutBuffer
+    call outImage
 
     popq %rax
 	ret

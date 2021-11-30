@@ -22,10 +22,12 @@ outImage:
 
 #; Denna funkar just nu bara med en siffra behöver mer arbete
 putInt:
-    movq %rdi, %rax
+    movq %rdi, %r10
     movq $0, %rcx #; current char counter
     movq $10, %rdi
 stringLoop:
+    movq %r10, %rax
+    movq $10, %rdi
     movq $0, %rdx
     divq %rdi #; divide by 10
     #; rdx har remainder från divisionen
