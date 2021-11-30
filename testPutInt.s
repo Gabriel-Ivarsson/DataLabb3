@@ -3,9 +3,9 @@
 .global	main
 main:
 	pushq $0
-    movq $10, %rdi
+    movq $123456, %rdi
     call putInt
 
     popq %rax
 	ret
-    
+
