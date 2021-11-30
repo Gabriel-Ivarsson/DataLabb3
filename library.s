@@ -212,9 +212,11 @@ putInt:
     movq $numOfDigits, %rsi
     leaq outBufPointer, %r13
     leaq tempBuf, %r15
+    movb $'\0', (%r15)
+    incq %r15
     cmpq $0, %r13
     je ptCallImage
-    cmpb $'\0', (%r13)
+    cmpb $0, (%r13)
     je ptCallImage
     jmp to_string
 ptCallImage:
@@ -237,10 +239,7 @@ to_string:
     je transfer2Buf1
     jmp to_string
 transfer2Buf1:
-    movq $'\0', (%r13)
-    movq $'\0', (%r15)
     leaq outBuffer, %r13
-    movq $20, %rsi
     decq %r15
     jmp transfer2Buf2
 transfer2Buf2:
@@ -248,11 +247,12 @@ transfer2Buf2:
     mov %edx, (%r13)
     incq %r13
     decq %r15
-    subq $1, %rsi
-    cmpq $0, %rsi
-    jg transfer2Buf2
+    cmpb $0, (%r15)
+    jne transfer2Buf2
     jmp ptEnd
 ptEnd:
+    decq %r13
+    movq $0, (%r13)
     ret
 
 printOutBuffer:
