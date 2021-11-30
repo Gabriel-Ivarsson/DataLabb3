@@ -19,6 +19,7 @@
 .global printBuffer
 .global outImage
 .global putInt
+.global printOutBuffer
 
 inImage:
     movq $inBuffer, %rdi
@@ -205,10 +206,9 @@ outImage:
     ret
 
 # Denna funkar just nu bara med en siffra behöver mer arbete
-putInt:
+p1utInt:
     movq %rdi, %rax
-    jmp string
-string:
+s1tring:
     movq $0, %rdx
     movq $10, %rbx
     idivq %rbx
@@ -217,11 +217,11 @@ string:
     pushq %rdx
 
     cmpq $0, %rax
-    jl string
+    jl s1tring
     # %r10 är bara ett test
     movq $0, %r10
     jmp callOutimage
-callOutimage:
+c1allOutimage:
     incq %r10
     popq %rdi
     movq %rdi, outBuffer
@@ -229,4 +229,41 @@ callOutimage:
     # test compare ta bort eller ändra om denna sen
     cmpq $2, %r10
     jl callOutimage
+    ret
+
+putInt:
+    movq outBufPointer, %r12
+    movq %rdi, %r13
+    push %rdi
+    cmpq $0, %r12
+    je callOutimage
+    cmpb $0, (%r12)
+    je callOutimage
+    incq %r12
+    jne toString
+callOutimage:
+    call outImage
+    movq outBuffer, %r12
+toString:
+    movq $0, %rdx
+    movq %r13, %rax
+    movq $10, %rbx
+    divq %rbx
+    movq %rax, %r13
+    addq $'0', %rdx
+    mov %rdx, %ebp
+    mov %ebp, (%r12)
+    incq %r12
+    cmpq $0, %rax
+    jne toString
+    jle piEnd
+piEnd:
+    incq %r12
+    movb $'\0', (%r12)
+    movq %r12, outBufPointer
+    ret
+
+printOutBuffer:
+    movq outBuffer, %rdi
+    call puts
     ret
