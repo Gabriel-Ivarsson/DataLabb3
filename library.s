@@ -223,17 +223,17 @@ ptCallImage:
     jmp to_string
 to_string:
     movq $0, %rdx
-    movq %r12, %rax 
+    movq %r12, %rax
     movq $10, %r14
     divq %r14
-    movq %rax, %r12 
+    movq %rax, %r12
     addq $'0', %rdx
     movq %rdx, (%r15)
     incq %r13
     incq %r15
     addq $1, %rsi
     movq %rsi, numOfDigits
-    cmpq $0, %rax 
+    cmpq $0, %rax
     je transfer2Buf1
     jmp to_string
 transfer2Buf1:
