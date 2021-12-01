@@ -7,8 +7,8 @@ main:
 	pushq $0
 	movq $15,%rsi
 	movq $buf,%rdi
-    call getText
-    call printBufferPosition
+    call getChar
+    call outImage
     call printBufferPosition
     movq $1, %rsi
     call setInPos

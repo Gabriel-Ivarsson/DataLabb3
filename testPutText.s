@@ -1,6 +1,6 @@
 	.data
-headMsg:	.asciz	"Start av testprogram. Skriv in 5 tal!"
-endMsg:	.asciz	"Slut pa testprogram"
+headMsg:	.ascii	"Start av test!"
+endMsg:	.ascii	"Slut pa test"
 buf:	.space	64
 sum:	.quad	0
 count:	.quad	0
@@ -12,6 +12,9 @@ main:
 	pushq	$0
 	movq	$headMsg,%rdi
 	call	putText
-	call outImage
+	movq $4, %rdi
+	call setOutPos
+	movq	$endMsg,%rdi
+	call	putText
     pop %rax
     ret
