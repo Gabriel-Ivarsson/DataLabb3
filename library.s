@@ -206,7 +206,7 @@ outImage:
     movq $outBuffer, %rdi
     call puts
     # cleans buffer
-    movq $0, outBuffer
+    movq $64, outBuffer
     ret
 
 putInt:
