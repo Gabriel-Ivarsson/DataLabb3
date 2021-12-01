@@ -1,4 +1,5 @@
 .data
+    empty: .asciz ""
     inBuffer:    .space 64
     outBuffer:    .space 64
     tempBuf:    .space 64
@@ -204,11 +205,11 @@ printBufferPosition:
 
 
 
-# out
+#; out
 outImage:
     movq $outBuffer, %rdi
     call puts
-    # cleans buffer
+    #; cleans buffer
     movq $0, outBuffer
     movq $0, outBufPointer
     ret
@@ -268,12 +269,14 @@ putText:
     cmpb $0, (%rdx)
     je startPt
     movq outBufPointer, %rdx
-    cmpb $0, (%rdx)
-    je outImage
+    cmpb $10, (%rdx) #; check for newline "\n"
+    je ptCallOutImage
+    jmp startPt
 ptCallOutImage:
     movq %rdi, temp2
     call outImage
     movq temp2, %rdi
+    movq $outBuffer, %rdx
 startPt:
     movq %rdx, %rsi
     jmp putTextLoop
@@ -284,10 +287,15 @@ putTextLoop:
     incq %rdi
     cmpb $0, (%rdi)
     je putTextEnd
+    cmpb $10, (%rdi) #; check for newline "\n"
+    je putTextEndOutImage
     jmp putTextLoop
 putTextEnd:
-    movb $0, (%rsi)
     movq %rsi, outBufPointer
+    ret
+putTextEndOutImage:
+    movq %rsi, outBufPointer
+    call outImage
     ret
 
 putChar:

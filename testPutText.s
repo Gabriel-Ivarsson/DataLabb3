@@ -1,6 +1,6 @@
 	.data
-headMsg:	.ascii	"AB!"
-endMsg:	.ascii	"CD!"
+headMsg:	.ascii	"start!"
+endMsg:	.asciz	"end!"
 buf:	.space	64
 sum:	.quad	0
 count:	.quad	0
@@ -10,12 +10,13 @@ temp:	.quad	0
 	.global	main
 main:
 	pushq	$0
+	movq $0, %rdi
 	movq	$headMsg,%rdi
 	call	putText
-	call printOutBufferPosition
-	movq $55, %rdi
+	movq $2, %rdi
 	call setOutPos
 	call printOutBufferPosition
+	movq $0, %rdi
 	movq	$endMsg,%rdi
 	call	putText
 	call printOutBufferPosition

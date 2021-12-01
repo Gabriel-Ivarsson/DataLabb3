@@ -5,9 +5,8 @@ main:
 	pushq $0
     movq $1234567890, %rdi
     call putInt
-    movq $0, %rdi
+    movq $5, %rdi
     call setOutPos
-    call outImage
     movq $10201, %rdi
     call putInt
     call outImage
