@@ -19,6 +19,7 @@
 .global setInPos
 .global setOutPos
 .global printBufferPosition
+.global printOutBufferPosition
 .global printBuffer
 .global outImage
 .global putInt
@@ -286,7 +287,6 @@ putTextLoop:
     jmp putTextLoop
 putTextEnd:
     movb $0, (%rsi)
-    incq %rsi
     movq %rsi, outBufPointer
     ret
 
