@@ -1,4 +1,5 @@
 .data
+    empty: .asciz ""
     inBuffer:    .space 64
     outBuffer:    .space 64
     tempBuf:    .space 64
@@ -27,6 +28,8 @@
 .global printOutBuffer
 .global putChar
 .global getOutPos
+.global getOutBufPtr
+.global getOutBuf
 
 inImage:
     movq $inBuffer, %rdi
@@ -35,11 +38,10 @@ inImage:
     ret
 
 getInt:
-    movq $inBuffer, %rdi
-    cmpb $0, (%rdi)
-    je callInImage
     movq bufPointer, %rdi
-    cmpb $0, (%rdi)
+    cmpq $0, %rdi
+    je callInImage
+    cmpq $'\n', (%rdi)
     je callInImage
     jmp startBlank
 callInImage:
@@ -204,20 +206,21 @@ printBufferPosition:
 
 
 
-# out
+#; out
 outImage:
     movq $outBuffer, %rdi
     call puts
-    # cleans buffer
-    movq $64, outBuffer
-    movq $0, outBufPointer
+    #; cleans buffer
+    movq $0, outBuffer
+    movq outBuffer, %r13
+    movq %r13, outBufPointer
     ret
 
 putInt:
     movq %rdi, %r12
     movq $outBufPointer, %r13
     movq $tempBuf, %r15
-    movb $0, (%r13)
+    movb $0, (%r15)
     incq %r15
     cmpq $0, %r13
     je ptCallImage
@@ -268,12 +271,14 @@ putText:
     cmpb $0, (%rdx)
     je startPt
     movq outBufPointer, %rdx
-    cmpb $0, (%rdx)
-    je outImage
+    cmpb $10, (%rdx) #; check for newline "\n"
+    je ptCallOutImage
+    jmp startPt
 ptCallOutImage:
     movq %rdi, temp2
     call outImage
     movq temp2, %rdi
+    movq $outBuffer, %rdx
 startPt:
     movq %rdx, %rsi
     jmp putTextLoop
@@ -284,10 +289,15 @@ putTextLoop:
     incq %rdi
     cmpb $0, (%rdi)
     je putTextEnd
+    cmpb $10, (%rdi) #; check for newline "\n"
+    je putTextEndOutImage
     jmp putTextLoop
 putTextEnd:
-    movb $0, (%rsi)
     movq %rsi, outBufPointer
+    ret
+putTextEndOutImage:
+    movq %rsi, outBufPointer
+    call outImage
     ret
 
 putChar:
@@ -309,7 +319,19 @@ pcContinued:
     ret
 
 getOutPos:
-    movq outBufPointer, %rax
+    movq outBufPointer, %r13
+    movq $outBuffer, %r14
+    movq $0, %rax
+    jmp gopLoop
+gopLoop:
+    cmpq %r14, %r13
+    je gopEnd
+    incq %rax
+    incq %r14
+    jne gopLoop
+gopEnd:
+    ret
+
 
 outSetMaxPos:
     movq $outBuffer, %r10
@@ -357,4 +379,11 @@ outSpEnd:
 printOutBufferPosition:
     movq $outBufPosition, %rdi
     call puts
+    ret
+
+getOutBufPtr:
+    movq outBufPointer, %rax
+    ret
+getOutBuf:
+    movq $outBuffer, %rax
     ret
