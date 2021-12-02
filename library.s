@@ -39,6 +39,8 @@ inImage:
     ret
 
 getInt:
+    cmpq $0, inBuffer
+    je callInImage
     call getInPos
     cmpq $63, %rax
     je callInImage
@@ -215,8 +217,7 @@ outImage:
     call puts
     #; cleans buffer
     movq $0, outBuffer
-    movq $outBuffer, %r13
-    movq %r13, outBufPointer
+    movq $0, outBufPointer
     ret
 
 putInt:
@@ -269,6 +270,9 @@ printOutBuffer:
     ret
 
 putText:
+    movq $outBuffer, %rdx
+    cmpq $0, outBufPointer
+    je startPt
     call getOutPos
     cmpq $63, %rax
     je ptCallOutImage
@@ -288,8 +292,6 @@ putTextLoop:
     incq %rdi
     cmpb $0, (%rdi)
     je putTextEnd
-    cmpb $10, (%rdi) #; check for newline "\n"
-    je putTextEndOutImage
     jmp putTextLoop
 putTextEnd:
     movq %rsi, outBufPointer
@@ -325,7 +327,7 @@ gopLoop:
     cmpq %r14, %r13
     je gopEnd
     incq %rax
-    incq %r14
+    decq %r13
     jmp gopLoop
 gopEnd:
     ret
