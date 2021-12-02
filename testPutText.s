@@ -10,19 +10,9 @@ temp:	.quad	0
 	.global	main
 main:
 	pushq	$0
+	call outImage
 	movq	$headMsg,%rdi
 	call	putText
-	movq $123, %rdi
-	call putInt
-	movq $2, %rdi
-	call setOutPos
-	call printOutBufferPosition
-	movq	$endMsg,%rdi
-	call	putText
-	call getOutPos
-	call outImage
-	movq %rax, %rdi
-	call putInt
 	call outImage
     pop %rax
     ret

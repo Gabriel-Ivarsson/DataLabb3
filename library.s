@@ -28,6 +28,7 @@
 .global printOutBuffer
 .global putChar
 .global getOutPos
+.global getInPos
 .global getOutBufPtr
 .global getOutBuf
 
@@ -38,19 +39,19 @@ inImage:
     ret
 
 getInt:
-    movq bufPointer, %rdi
-    cmpq $0, %rdi
+    cmpq $0, inBuffer
     je callInImage
-    cmpq $'\n', (%rdi)
+    call getInPos
+    cmpq $63, %rax
     je callInImage
     jmp startBlank
 callInImage:
-    movq $12, %rsi
-    movq $inBuffer, %rdi
+    movq $64, %rsi
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
     movq $0, %r11 # Teckenvisare
+    jmp startBlank
 startBlank:
     cmpb $' ', (%rdi)
     jne startPositive
@@ -89,11 +90,8 @@ end:
     ret
 
 getText:
-    movq $inBuffer, %rdx
-    cmpb $0, (%rdx)
-    je gtCallImage
-    movq bufPointer, %rdx
-    cmpb $0, (%rdx)
+    call getInPos
+    cmpq $63, %rax
     je gtCallImage
     jmp gtStart
 gtCallImage:
@@ -129,10 +127,8 @@ getTextEnd:
     ret
 
 getChar:
-    movq bufPointer, %rdi
-    cmpq $0, %rdi
-    je gcCallImage
-    cmpb $0, (%rdi)
+    call getInPos
+    cmpq $63, %rax
     je callInImage
     jmp getCharEnd
 gcCallImage:
@@ -152,7 +148,17 @@ printBuffer:
     ret
 
 getInPos:
-    movq $bufPointer, %rax
+    movq bufPointer, %r13
+    movq $inBuffer, %r14
+    movq $0, %rax
+    jmp gipLoop
+gipLoop:
+    cmpq %r14, %r13
+    je gipEnd
+    incq %rax
+    incq %r14
+    jne gipLoop
+gipEnd:
     ret
 
 setMaxPos:
@@ -173,12 +179,11 @@ setInPos:
     movq $inBuffer, %r10
     cmpq $0, %rdi
     jle reqZero
-    call setMaxPos
-    cmpq maxPOS, %rdi
+    cmpq $63, %rdi
     jge reqMaxPos
     jmp spLoopStart
 reqMaxPos:
-    movq maxPOS, %rdi
+    movq $63, %rdi
     jmp spLoopStart
 reqZero:
     movq $0, %rcx
@@ -221,9 +226,8 @@ putInt:
     movq $tempBuf, %r15
     movb $0, (%r15)
     incq %r15
-    cmpq $0, %r10
-    je ptCallImage
-    cmpb $0, (%r10)
+    call getOutPos
+    cmpq $63, %rax
     je ptCallImage
     jmp to_string
 ptCallImage:
@@ -267,10 +271,10 @@ printOutBuffer:
 
 putText:
     movq $outBuffer, %rdx
-    cmpb $0, (%rdx)
+    cmpq $0, outBufPointer
     je startPt
-    movq outBufPointer, %rdx
-    cmpb $10, (%rdx) #; check for newline "\n"
+    call getOutPos
+    cmpq $63, %rax
     je ptCallOutImage
     jmp startPt
 ptCallOutImage:
@@ -288,8 +292,6 @@ putTextLoop:
     incq %rdi
     cmpb $0, (%rdi)
     je putTextEnd
-    cmpb $10, (%rdi) #; check for newline "\n"
-    je putTextEndOutImage
     jmp putTextLoop
 putTextEnd:
     movq %rsi, outBufPointer
@@ -302,9 +304,8 @@ putTextEndOutImage:
 putChar:
     movq outBufPointer, %rsi
     pushq %rdi
-    cmpq $0, %rsi
-    je pcImage
-    cmpb $0, (%rsi)
+    call getOutPos
+    cmpq $63, %rax
     je pcImage
 pcImage:
     call outImage
@@ -326,8 +327,8 @@ gopLoop:
     cmpq %r14, %r13
     je gopEnd
     incq %rax
-    incq %r14
-    jne gopLoop
+    decq %r13
+    jmp gopLoop
 gopEnd:
     ret
 
@@ -351,11 +352,11 @@ setOutPos:
     cmpq $0, %rdi
     jle outReqZero
     call outSetMaxPos
-    cmpq maxPOS, %rdi
+    cmpq $63, %rdi
     jge outReqMaxPos
     jmp outSpLoopStart
 outReqMaxPos:
-    movq maxPOS, %rdi
+    movq $63, %rdi
     jmp outSpLoopStart
 outReqZero:
     movq $0, %rcx
