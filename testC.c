@@ -5,13 +5,14 @@
 int main()
 {
     // getInt
-/*
- *    int pleaseWork = getInt();
- *    printf("Message 1 is %d\n", pleaseWork);
- *
- *    pleaseWork = getInt();
- *    printf("Message 2 is %d\n", pleaseWork);
- */
+    /*
+     *int pleaseWork = getInt();
+     *printf("Message 1 is %d\n", pleaseWork);
+     *int bajs = getInPos();
+     *pleaseWork = getInt();
+     *printf("Message 2 is %d\n", pleaseWork);
+     *printf("inpos: %d\n", bajs);
+     */
 
     // getText
     char word1[SIZE+2] = "";
@@ -20,6 +21,8 @@ int main()
 
     printf("Compared number1 was: %d\n", number1);
     printf("Word1: %s\n", word1);
+
+    setInPos(3);
 
     printf("Enter second word(max %d long):\n",SIZE-2);
     char word2[SIZE] = "";

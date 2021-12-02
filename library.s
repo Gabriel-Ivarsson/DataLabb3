@@ -33,24 +33,26 @@
 .global getOutBuf
 
 inImage:
+    movq $64, %rsi
     movq $inBuffer, %rdi
     movq stdin, %rdx
     call fgets
     ret
 
 getInt:
-    cmpq $0, inBuffer
+    movq $inBuffer, %rdi
+    cmpq $0, %rdi
     je callInImage
-    call getInPos
-    cmpq $63, %rax
-    je callInImage
+#;    call getInPos #; get in pos gay
+#;    cmpq $64, %rax
+#;    je callInImage
+    jmp callInImage
     jmp startBlank
 callInImage:
-    movq $64, %rsi
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
-    movq $0, %r11 # Teckenvisare
+    movq $0, %r11 #; Teckenvisare
     jmp startBlank
 startBlank:
     cmpb $' ', (%rdi)
@@ -90,9 +92,13 @@ end:
     ret
 
 getText:
+    movq $inBuffer, %rdx
+    cmpq $0, (%rdx)
+    je gtCallImage
     call getInPos
     cmpq $63, %rax
     je gtCallImage
+    movq bufPointer, %rdx
     jmp gtStart
 gtCallImage:
     movq %rdi, temp2
@@ -148,8 +154,12 @@ printBuffer:
     ret
 
 getInPos:
+    pushq %r13
+    pushq %r14
     movq bufPointer, %r13
     movq $inBuffer, %r14
+    cmpq $0, %r14
+    je gipEnd
     movq $0, %rax
     jmp gipLoop
 gipLoop:
@@ -159,6 +169,8 @@ gipLoop:
     incq %r14
     jne gipLoop
 gipEnd:
+    pop %r13
+    pop %r14
     ret
 
 setMaxPos:
@@ -271,8 +283,9 @@ printOutBuffer:
 
 putText:
     movq $outBuffer, %rdx
-    cmpq $0, outBufPointer
+    cmpb $0, (%rdx)
     je startPt
+    movq outBufPointer, %rdx
     call getOutPos
     cmpq $63, %rax
     je ptCallOutImage
@@ -322,6 +335,8 @@ getOutPos:
     movq outBufPointer, %r13
     movq $outBuffer, %r14
     movq $0, %rax
+    cmpq $0, %r14
+    je gopEnd
     jmp gopLoop
 gopLoop:
     cmpq %r14, %r13
