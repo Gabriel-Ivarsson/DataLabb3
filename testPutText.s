@@ -1,5 +1,5 @@
 	.data
-headMsg:	.ascii	"start!"
+headMsg:	.asciz	"start!"
 endMsg:	.asciz	"end!"
 buf:	.space	64
 sum:	.quad	0
@@ -10,15 +10,19 @@ temp:	.quad	0
 	.global	main
 main:
 	pushq	$0
-	movq $0, %rdi
 	movq	$headMsg,%rdi
 	call	putText
+	movq $123, %rdi
+	call putInt
 	movq $2, %rdi
 	call setOutPos
 	call printOutBufferPosition
-	movq $0, %rdi
 	movq	$endMsg,%rdi
 	call	putText
-	call printOutBufferPosition
+	call getOutPos
+	call outImage
+	movq %rax, %rdi
+	call putInt
+	call outImage
     pop %rax
     ret

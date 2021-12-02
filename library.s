@@ -212,8 +212,7 @@ outImage:
     call puts
     #; cleans buffer
     movq $0, outBuffer
-    movq outBuffer, %r13
-    movq %r13, outBufPointer
+    movq $0, outBufPointer
     ret
 
 putInt:
