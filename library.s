@@ -4,6 +4,7 @@
     tempBuf:    .space 64
     bufPointer:   .quad   0
     outBufPointer: .quad   0
+    outBufPosition:   .quad   0
     bufPosition:   .quad   0
     temp:   .quad   0
     temp2:   .quad   0
@@ -16,7 +17,9 @@
 .global getText
 .global getChar
 .global setInPos
+.global setOutPos
 .global printBufferPosition
+.global printOutBufferPosition
 .global printBuffer
 .global outImage
 .global putInt
@@ -207,12 +210,13 @@ outImage:
     call puts
     # cleans buffer
     movq $64, outBuffer
+    movq $0, outBufPointer
     ret
 
 putInt:
     movq %rdi, %r12
-    leaq outBufPointer, %r13
-    leaq tempBuf, %r15
+    movq $outBufPointer, %r13
+    movq $tempBuf, %r15
     movb $0, (%r13)
     incq %r15
     cmpq $0, %r13
@@ -222,7 +226,7 @@ putInt:
     jmp to_string
 ptCallImage:
     call outImage
-    leaq outBuffer, %r13
+    movq $outBuffer, %r13
     jmp to_string
 to_string:
     movq $0, %rdx
@@ -238,7 +242,7 @@ to_string:
     je transfer2Buf1
     jmp to_string
 transfer2Buf1:
-    leaq outBuffer, %r13
+    movq $outBuffer, %r13
     decq %r15
     jmp transfer2Buf2
 transfer2Buf2:
@@ -259,9 +263,19 @@ printOutBuffer:
     call puts
     ret
 
-# Denna borde vara ganska klar men jag tror kanske det behövs ändra var outbuffpointern pekar också
 putText:
-    leaq outBuffer, %rsi
+    movq $outBuffer, %rdx
+    cmpb $0, (%rdx)
+    je startPt
+    movq outBufPointer, %rdx
+    cmpb $0, (%rdx)
+    je outImage
+ptCallOutImage:
+    movq %rdi, temp2
+    call outImage
+    movq temp2, %rdi
+startPt:
+    movq %rdx, %rsi
     jmp putTextLoop
 putTextLoop:
     mov (%rdi), %edx
@@ -269,12 +283,11 @@ putTextLoop:
     incq %rsi
     incq %rdi
     cmpb $0, (%rdi)
-    jne putTextLoop
-    jmp putTextEnd
+    je putTextEnd
+    jmp putTextLoop
 putTextEnd:
-    incq %rdi
-    movb $0, (%rdi)
-    movq %rdi, outBufPointer
+    movb $0, (%rsi)
+    movq %rsi, outBufPointer
     ret
 
 putChar:
@@ -298,36 +311,50 @@ pcContinued:
 getOutPos:
     movq outBufPointer, %rax
 
+outSetMaxPos:
+    movq $outBuffer, %r10
+    movq $0, %rcx
+outStpLoop:
+    cmpb $0, (%r10)
+    je outStpEnd
+    incq %rcx
+    incq %r10
+    jmp outStpLoop
+outStpEnd:
+    movq %rcx, maxPOS
+    movq $0, %rcx
+    ret
+
 setOutPos:
     movq $outBuffer, %r10
     cmpq $0, %rdi
-    jle reqZero
-    call setMaxPos
+    jle outReqZero
+    call outSetMaxPos
     cmpq maxPOS, %rdi
-    jge reqMaxPos
-    jmp spLoopStart
-reqMaxPos:
+    jge outReqMaxPos
+    jmp outSpLoopStart
+outReqMaxPos:
     movq maxPOS, %rdi
-    jmp spLoopStart
-reqZero:
+    jmp outSpLoopStart
+outReqZero:
     movq $0, %rcx
-    jmp spEnd
-spLoopStart:
+    jmp outSpEnd
+outSpLoopStart:
     movq $outBuffer, %r10
     movq $0, %rcx
-spLoop:
+outSpLoop:
     cmpq %rcx, %rdi
-    je spEnd
+    je outSpEnd
     incq %rcx
     incq %r10
-    jmp spLoop
-spEnd:
+    jmp outSpLoop
+outSpEnd:
     addq $'0', %rcx
     movq %rcx, outBufPosition
-    movq %r10, bufPointer
+    movq %r10, outBufPointer
     ret
 
-printBufferPosition:
-    movq $bufPosition, %rdi
+printOutBufferPosition:
+    movq $outBufPosition, %rdi
     call puts
     ret
