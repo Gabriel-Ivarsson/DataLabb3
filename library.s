@@ -216,48 +216,48 @@ outImage:
     ret
 
 putInt:
-    movq %rdi, %r12
-    movq $outBufPointer, %r13
+    movq %rdi, %r9
+    movq $outBufPointer, %r10
     movq $tempBuf, %r15
     movb $0, (%r15)
     incq %r15
-    cmpq $0, %r13
+    cmpq $0, %r10
     je ptCallImage
-    cmpb $0, (%r13)
+    cmpb $0, (%r10)
     je ptCallImage
     jmp to_string
 ptCallImage:
     call outImage
-    movq $outBuffer, %r13
+    movq $outBuffer, %r10
     jmp to_string
 to_string:
     movq $0, %rdx
-    movq %r12, %rax
+    movq %r9, %rax
     movq $10, %r14
     divq %r14
-    movq %rax, %r12
+    movq %rax, %r9
     addq $'0', %rdx
     movq %rdx, (%r15)
-    incq %r13
+    incq %r10
     incq %r15
     cmpq $0, %rax
     je transfer2Buf1
     jmp to_string
 transfer2Buf1:
-    movq $outBuffer, %r13
+    movq $outBuffer, %r10
     decq %r15
     jmp transfer2Buf2
 transfer2Buf2:
     mov (%r15), %edx
-    mov %edx, (%r13)
-    incq %r13
+    mov %edx, (%r10)
+    incq %r10
     decq %r15
     cmpb $0, (%r15)
     jne transfer2Buf2
     jmp ptEnd
 ptEnd:
-    movb $0, (%r13)
-    movq %r13, outBufPointer
+    movb $0, (%r10)
+    movq %r10, outBufPointer
     ret
 
 printOutBuffer:
