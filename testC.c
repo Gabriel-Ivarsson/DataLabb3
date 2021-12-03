@@ -8,13 +8,13 @@ int main()
     
     int pleaseWork = getInt();
     printf("Message 1 is %d\n", pleaseWork);
-    int bajs = getInPos();
     pleaseWork = getInt();
     printf("Message 2 is %d\n", pleaseWork);
+    int bajs = getInPos();
     printf("inpos: %d\n", bajs);
-    
 
     // getText
+
     // char word1[SIZE+2] = "";
     // printf("Enter first word(max %d long):\n",SIZE);
     // int number1 = getText(word1, SIZE);
@@ -31,5 +31,5 @@ int main()
     // printf("Compared number2 was: %d\n", number2);
     // printf("Word2: %s\n", word2);
 
-    return 0;
+    // return 0;
 }

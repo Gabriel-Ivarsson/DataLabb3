@@ -29,9 +29,6 @@ main:
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$0, %eax
-	call	getInPos@PLT
-	movl	%eax, -4(%rbp)
-	movl	$0, %eax
 	call	getInt@PLT
 	movl	%eax, -8(%rbp)
 	movl	-8(%rbp), %eax
@@ -39,9 +36,18 @@ main:
 	leaq	.LC1(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
+	movl	$0, %eax
+	call	getInPos@PLT
+	movl	%eax, -4(%rbp)
 	movl	-4(%rbp), %eax
 	movl	%eax, %esi
 	leaq	.LC2(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	call	getchar@PLT
+	movb	%al, -9(%rbp)
+	movsbq	-9(%rbp), %rax
+	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$0, %eax
