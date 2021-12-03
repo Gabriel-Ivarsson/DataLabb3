@@ -5,12 +5,9 @@ buf:	.space 64
 .global	main
 main:
 	pushq $0
-	movq $15,%rsi
-	movq $buf,%rdi
     call getChar
+    movq %rax, %rdi
+    call putChar
     call outImage
-    call printBufferPosition
-    movq $1, %rsi
-    call setInPos
     popq %rax
 	ret

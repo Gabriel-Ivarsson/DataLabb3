@@ -134,12 +134,16 @@ getTextEnd:
     ret
 
 getChar:
+    movq $inBuffer, %rdi
+    cmpq $0, (%rdi)
+    je gcCallImage
     call getInPos
     cmpq $63, %rax
-    je callInImage
+    je gcCallImage
+    movq bufPointer, %rdi
     jmp getCharEnd
 gcCallImage:
-    movq $12, %rsi
+    movq $64, %rsi
     movq $inBuffer, %rdi
     call inImage
     movq $inBuffer, %rdi
@@ -297,6 +301,7 @@ ptCallOutImage:
     movq temp2, %rdi
     movq $outBuffer, %rdx
 startPt:
+    movq %rdx, outBufPointer # intialize pointer attempt
     movq %rdx, %rsi
     jmp putTextLoop
 putTextLoop:
@@ -318,6 +323,9 @@ putTextEndOutImage:
 putChar:
     movq outBufPointer, %rsi
     pushq %rdi
+    movq $outBuffer, %rdi
+    cmpq $0, (%rdi)
+    je setPointer
     call getOutPos
     cmpq $63, %rax
     je pcImage
@@ -325,6 +333,9 @@ pcImage:
     call outImage
     leaq outBuffer, %rsi
     jmp pcContinued
+setPointer: # intialize pointer attempt
+    movq %rdi, outBufPointer
+    movq outBufPointer, %rsi
 pcContinued:
     popq %rdi
     movq %rdi, (%rsi)

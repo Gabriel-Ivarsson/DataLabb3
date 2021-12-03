@@ -9,11 +9,6 @@ main:
 	movq $buf,%rdi
     call getText
     movq $buf, %rdi
-    call puts
-    movq $10,%rsi
-	movq $buf,%rdi
-    call getText
-    movq $buf, %rdi
-    call puts
+    call putText
     popq %rax
 	ret
