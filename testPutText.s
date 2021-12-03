@@ -14,7 +14,6 @@ main:
 	call	putText
 	movq $2, %rdi
 	call setOutPos
-	call printOutBufferPosition
 	movq	$endMsg,%rdi
 	call	putText
 	call getOutPos

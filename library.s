@@ -41,18 +41,20 @@ inImage:
 
 getInt:
     movq $inBuffer, %rdi
-    cmpq $0, %rdi
+    cmpq $0, (%rdi)
     je callInImage
-#;    call getInPos #; get in pos gay
-#;    cmpq $64, %rax
-#;    je callInImage
-    jmp callInImage
+    call getInPos #; get in pos gay
+    cmpq $64, %rax
+    je callInImage
+    movq bufPointer, %rdi
+    movq $0, %rax
+    movq $0, %r11
     jmp startBlank
 callInImage:
     call inImage
     movq $inBuffer, %rdi
     movq $0, %rax
-    movq $0, %r11 #; Teckenvisare
+    movq $0, %r11 # Teckenvisare
     jmp startBlank
 startBlank:
     cmpb $' ', (%rdi)
@@ -87,7 +89,6 @@ NAN:
     negq %rax
     jmp end
 end:
-    incq %rdi
     movq %rdi, bufPointer
     ret
 
@@ -158,7 +159,6 @@ getInPos:
     pushq %r14
     movq bufPointer, %r13
     movq $inBuffer, %r14
-    cmpq $0, %r14
     je gipEnd
     movq $0, %rax
     jmp gipLoop
@@ -223,11 +223,11 @@ printBufferPosition:
 
 
 
-#; out
+# out
 outImage:
     movq $outBuffer, %rdi
     call puts
-    #; cleans buffer
+    # cleans buffer
     movq $0, outBuffer
     movq $0, outBufPointer
     ret
