@@ -159,6 +159,7 @@ getInPos:
     pushq %r14
     movq bufPointer, %r13
     movq $inBuffer, %r14
+    cmpq $0, (%r14)
     je gipEnd
     movq $0, %rax
     jmp gipLoop
@@ -335,7 +336,7 @@ getOutPos:
     movq outBufPointer, %r13
     movq $outBuffer, %r14
     movq $0, %rax
-    cmpq $0, %r14
+    cmpq $0, (%r14)
     je gopEnd
     jmp gopLoop
 gopLoop:
