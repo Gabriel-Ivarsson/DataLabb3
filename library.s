@@ -37,6 +37,7 @@ inImage:
     movq $inBuffer, %rdi
     movq stdin, %rdx
     call fgets
+    movq $inBuffer, bufPointer
     ret
 
 getInt:
@@ -359,26 +360,10 @@ gopLoop:
 gopEnd:
     ret
 
-
-outSetMaxPos:
-    movq $outBuffer, %r10
-    movq $0, %rcx
-outStpLoop:
-    cmpb $0, (%r10)
-    je outStpEnd
-    incq %rcx
-    incq %r10
-    jmp outStpLoop
-outStpEnd:
-    movq %rcx, maxPOS
-    movq $0, %rcx
-    ret
-
 setOutPos:
     movq $outBuffer, %r10
     cmpq $0, %rdi
     jle outReqZero
-    call outSetMaxPos
     cmpq $63, %rdi
     jge outReqMaxPos
     jmp outSpLoopStart

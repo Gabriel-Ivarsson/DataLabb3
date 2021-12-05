@@ -1,19 +1,14 @@
 .data
-    buf:    .asciz "Hello"
+    buf:    .asciz "1234"
 
 .text
 
 .global	main
 main:
 	pushq $0
-    movq $buf, %rdi
-    call putText
-    movq $2, %rdi
-    call setOutPos
-    call getOutPos
-    movq %rax, %rdi
-    call putInt
-    call outImage
+    call inImage
+    call getInt
+
 
     popq %rax
 	ret
