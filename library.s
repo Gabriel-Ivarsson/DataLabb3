@@ -149,15 +149,11 @@ gcCallImage:
     call inImage
     movq $inBuffer, %rdi
 getCharEnd:
-    mov (%rdi), %eax
+    movzbq (%rdi), %rax
     incq %rdi
     movq %rdi, bufPointer
     ret
 
-printBuffer:
-    movq bufPointer, %rdi
-    call puts
-    ret
 
 getInPos:
     pushq %r13
