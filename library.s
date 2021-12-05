@@ -235,14 +235,19 @@ outImage:
     ret
 
 putInt:
+    movq $0, %r11 #; for keeping track of which buffer to choose 0 for OutBuffer 1 for outBufPointer.
     movq %rdi, %r9
-    movq $outBufPointer, %r10
     movq $tempBuf, %r15
     movb $0, (%r15)
     incq %r15
+    movq $outBuffer, %rdx
+    cmpb $0, (%rdx)
+    je to_string
     call getOutPos
     cmpq $63, %rax
     je ptCallImage
+    movq outBufPointer, %r10
+    movq $1, %r11 #; setting tracker var to 1 for outBufPointer.
     jmp to_string
 ptCallImage:
     call outImage
@@ -262,8 +267,11 @@ to_string:
     je transfer2Buf1
     jmp to_string
 transfer2Buf1:
-    movq $outBuffer, %r10
     decq %r15
+    movq $outBuffer, %r10
+    cmpq $0, %r11
+    je transfer2Buf2
+    movq outBufPointer, %r10
     jmp transfer2Buf2
 transfer2Buf2:
     mov (%r15), %edx
