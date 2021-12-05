@@ -334,6 +334,7 @@ putChar:
     call getOutPos
     cmpq $63, %rax
     je pcImage
+    jmp pcContinued
 pcImage:
     call outImage
     leaq outBuffer, %rsi

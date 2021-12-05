@@ -12,6 +12,8 @@ main:
     call putInt
     movq $50, %rdi
     call putInt
+    movq $'+', %rdi
+    call putChar 
     movq $90, %rdi
     call putInt
     movq $33, %rdi
