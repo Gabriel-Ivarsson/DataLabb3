@@ -7,7 +7,6 @@ main:
     call putInt
     movq $10201, %rdi
     call putInt
-    call printOutBuffer
 
     popq %rax
 	ret
