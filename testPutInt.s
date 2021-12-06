@@ -12,9 +12,10 @@ main:
     call putInt
     movq $50, %rdi
     call putInt
+    call outImage
     movq $90, %rdi
     call putInt
-    movq $33, %rdi
+    movq $-33, %rdi
     call putInt
     call outImage
 

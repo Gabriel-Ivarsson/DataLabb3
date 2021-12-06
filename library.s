@@ -234,8 +234,17 @@ outImage:
     movq $0, outBufPointer
     ret
 
+piSetNeg:
+    movq $1, %r8 #; set to 1 aka negative.
+    neg %rdi
+    jmp piStart
+
 putInt:
     movq $0, %r11 #; for keeping track of which buffer to choose 0 for OutBuffer 1 for outBufPointer.
+    movq $0, %r8 #; for keeping track of negative/positive number, 0 for positive, 1 for negative.
+    cmpq $0, %rdi
+    jl piSetNeg
+piStart:
     movq %rdi, %r9
     movq $tempBuf, %r15
     movb $0, (%r15)
@@ -270,9 +279,15 @@ transfer2Buf1:
     decq %r15
     movq $outBuffer, %r10
     cmpq $0, %r11
-    je transfer2Buf2
+    je piStartT2B2
     movq outBufPointer, %r10
-    jmp transfer2Buf2
+    jmp piStartT2B2
+piStartT2B2:
+    cmpq $1, %r8
+    jne transfer2Buf2 #; if not negative, jump to next step.
+    #; otherwise, add "-" to current buffer position
+    movb $'-', (%r10)
+    incq %r10
 transfer2Buf2:
     mov (%r15), %edx
     mov %edx, (%r10)
@@ -284,6 +299,9 @@ transfer2Buf2:
 ptEnd:
     movb $0, (%r10)
     movq %r10, outBufPointer
+    addq $'0', %r8
+    movq %r8, outBufPosition
+    call printOutBufferPosition
     ret
 
 printOutBuffer:
