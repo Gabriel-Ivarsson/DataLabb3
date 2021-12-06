@@ -299,9 +299,6 @@ transfer2Buf2:
 ptEnd:
     movb $0, (%r10)
     movq %r10, outBufPointer
-    addq $'0', %r8
-    movq %r8, outBufPosition
-    call printOutBufferPosition
     ret
 
 printOutBuffer:
@@ -352,6 +349,7 @@ putChar:
     call getOutPos
     cmpq $63, %rax
     je pcImage
+    jmp pcContinued
 pcImage:
     call outImage
     leaq outBuffer, %rsi
